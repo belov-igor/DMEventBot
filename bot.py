@@ -45,26 +45,25 @@ async def main():
                              "Сообщение дойдёт куда-надо, и Вам обязательно ответят!")
 
     # Обработка ответов от администратора
-    @dp.message_handler(lambda message: message.reply_to_message and message.reply_to_message.forward_from)
+    @dp.message_handler(lambda message: message.reply_to_message and message.reply_to_message.forward_from,
+                        content_types=types.ContentTypes.ANY)
     async def handle_admin_response(message: types.Message):
         user_id = message.reply_to_message.forward_from.id
-        admin_response = message.text
-
-        # Отправка ответа пользователю (с вложениями, если они есть)
-        # TODO сделать отправку вложений
-        if message.reply_to_message.media_group_id:
-            media_group = await bot.send_media_group(message.chat.id, message.reply_to_message.message_id)
-            for media in media_group:
-                if media.photo:
-                    await bot.send_photo(user_id, photo=media.photo[-1].file_id, caption=admin_response)
-                elif media.video:
-                    await bot.send_video(user_id, video=media.video.file_id, caption=admin_response)
-                elif media.document:
-                    await bot.send_document(user_id, document=media.document.file_id, caption=admin_response)
-                # Добавьте обработку других типов вложений по аналогии
-
+        # Проверка типа контента, который отправляет администратор, и пересылка его пользователю
+        if message.content_type == 'text':
+            await bot.send_message(user_id, message.text)
+        elif message.content_type == 'photo':
+            await bot.send_photo(user_id, photo=message.photo[0].file_id, caption=message.caption)
+        elif message.content_type == 'video':
+            await bot.send_video(user_id, video=message.video.file_id, caption=message.caption)
+        elif message.content_type == 'audio':
+            await bot.send_audio(user_id, audio=message.audio.file_id, caption=message.caption)
+        elif message.content_type == 'voice':
+            await bot.send_voice(user_id, voice=message.voice.file_id, caption=message.caption)
+        elif message.content_type == 'video_note':
+            await bot.send_video_note(user_id, video_note=message.video_note.file_id)
         else:
-            await bot.send_message(user_id, admin_response)
+            await message.answer('Коля, брат, ну только фото, видео, голосовухи и кружочки. Это уже перебор')
 
     # Обработка сообщений от пользователя
     @dp.message_handler(content_types=types.ContentTypes.TEXT)
