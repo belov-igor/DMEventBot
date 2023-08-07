@@ -31,7 +31,7 @@ async def main():
         await message.answer(info_message)
         links_buttons = types.InlineKeyboardMarkup()
         links_buttons.row(types.InlineKeyboardButton(
-            text="Наш Instagram", url="https://www.instagram.com/radiatorblack/"))
+            text="Наш Instagram", url="https://instagram.com/vpnevent?igshid=MzRlODBiNWFlZA=="))
         await message.answer("И обязательно подписывайтесь на наши соцсети!",
                              reply_markup=links_buttons)
 
