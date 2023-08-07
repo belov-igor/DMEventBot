@@ -74,7 +74,7 @@ async def main():
         # Отправка сообщения от пользователя в чат
         await bot.send_message(config.admin_id.get_secret_value(),
                                f'🔽 Ник человека внизу: <b>@{message.chat.username}</b> 🔽')
-        await bot.forward_message(config.admin_id.get_secret_value(),
+        await bot.forward_message(config.group_id.get_secret_value(),
                                   message.chat.id, message.message_id)
 
     # Пропускаем все накопленные входящие и запускаем процесс поллинга новых апдейтов
