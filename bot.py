@@ -29,6 +29,7 @@ async def main():
                        "провести какое-нибудь мероприятие, то пишите в ЛС одному из этих двух людей — " \
                        "<b>@BISGARIK</b> или <b>@RADIATORBLACK</b>"
         await message.answer(info_message)
+
         links_buttons = types.InlineKeyboardMarkup()
         links_buttons.row(types.InlineKeyboardButton(
             text="Наш Instagram", url="https://instagram.com/vpnevent?igshid=MzRlODBiNWFlZA=="))
@@ -42,13 +43,14 @@ async def main():
                              "В будущем, при нажатии на эту команду, будет появляться список мероприятий.\n\n"
                              "А пока просим Вас просто написать в одном сообщении текстом, на какое из мероприятий "
                              "Вы бы хотели попасть, на чьё имя бронировать, и сколько будет человек.\n\n"
-                             "Сообщение дойдёт куда-надо, и Вам обязательно ответят!")
+                             "Сообщение дойдёт куда надо, и Вам обязательно ответят!")
 
     # Обработка ответов от администратора
     @dp.message_handler(lambda message: message.reply_to_message and message.reply_to_message.forward_from,
                         content_types=types.ContentTypes.ANY)
     async def handle_admin_response(message: types.Message):
         user_id = message.reply_to_message.forward_from.id
+
         # Проверка типа контента, который отправляет администратор, и пересылка его пользователю
         if message.content_type == 'text':
             await bot.send_message(user_id, message.text)
@@ -70,7 +72,10 @@ async def main():
     async def answer(message: types.Message):
 
         # Отправка сообщения от пользователя в чат
-        await bot.forward_message(config.group_id.get_secret_value(), message.chat.id, message.message_id)
+        await bot.send_message(config.admin_id.get_secret_value(),
+                               f'🔽 Ник человека внизу: <b>@{message.chat.username}</b> 🔽')
+        await bot.forward_message(config.admin_id.get_secret_value(),
+                                  message.chat.id, message.message_id)
 
     # Пропускаем все накопленные входящие и запускаем процесс поллинга новых апдейтов
     await bot.delete_webhook(drop_pending_updates=True)
