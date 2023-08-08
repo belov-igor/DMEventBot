@@ -68,7 +68,7 @@ async def main():
             await message.answer('Коля, брат, ну только фото, видео, голосовухи и кружочки. Это уже перебор')
 
     # Обработка сообщений от пользователя
-    @dp.message_handler(content_types=types.ContentTypes.TEXT)
+    @dp.message_handler(content_types=types.ContentTypes.ANY)
     async def answer(message: types.Message):
 
         # Отправка сообщения от пользователя в чат
